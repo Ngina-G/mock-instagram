@@ -41,3 +41,9 @@ class Image(models.Model):
     def get_image_by_id(self):
         Image.objects.get(id=self.id)
 
+class Profile(models.Model):
+    bio = models.TextField(max_length=255)
+    profile_photo = models.ImageField(upload_to='profile/',default ='image.jpg')
+
+    def __str__(self):
+       return self.user.username
