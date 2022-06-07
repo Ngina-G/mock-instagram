@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from clone.forms import UserImageForm, SignUpForm, UpdateUserForm, UpdateUserProfileForm, PostForm, CommentForm
 from .models import Post, Profile, Comment
+from django.contrib.auth import login, authenticate,logout
 from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.models import User
-# from django.urls import reverse_lazy,reverse
+from django.urls import reverse_lazy,reverse
 
 # Create your views here.
    
-@login_required(login_url='/accounts/login/') 
+@login_required(login_url='/accounts/login')
 def user_image_request(request):  
     if request.method == 'POST':  
         form = UserImageForm(request.POST, request.FILES)  
@@ -25,7 +26,7 @@ def user_image_request(request):
     return render(request, 'clone/post_form.html', {'form': form})  
 
 
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login')
 def home(request):
     images = Post.objects.all()
     users = User.objects.exclude(id=request.user.id)
@@ -44,10 +45,12 @@ def home(request):
         'users': users,
 
     }
+    # named_redirect = reverse('profile_edit')
+    # return redirect(named_redirect, params)
     return render(request, 'index.html', params)
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login')
 def profile(request, username):
     images = request.user.profile.post.all()
     if request.method == 'POST':
@@ -69,30 +72,20 @@ def profile(request, username):
     return render(request, 'clone/profile.html', params)
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login')
 def user_profile(request, username):
     user_prof = get_object_or_404(User, username=username)
     if request.user == user_prof:
         return redirect('profile', username=request.user.username)
     user_posts = user_prof.profile.post.all()
     
-    followers = Follow.objects.filter(followed=user_prof.profile)
-    follow_status = None
-    for follower in followers:
-        if request.user.profile == follower.follower:
-            follow_status = True
-        else:
-            follow_status = False
     params = {
         'user_prof': user_prof,
         'user_posts': user_posts,
-        'followers': followers,
-        'follow_status': follow_status
     }
-    print(followers)
-    return render(request, 'clone/user_prof.html', params)
+    return render(request, 'clone/user_profile.html', params)
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login')
 def post_comment(request, id):
     image = get_object_or_404(Post, pk=id)
     is_liked = False
@@ -124,7 +117,7 @@ def LikeView (request,pk):
     return HttpResponseRedirect(reverse_lazy('user',args=[str(pk)]))
 
 
-@login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login')
 def search_profile(request):
     if 'search_user' in request.GET and request.GET['search_user']:
         name = request.GET.get("search_user")
@@ -139,3 +132,24 @@ def search_profile(request):
     else:
         message = "You haven't searched for any image category"
     return render(request, 'clone/search.html', {'message': message})
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+    
+            username = form.cleaned_data.get('username')
+            created_user = form.save()
+            Profile.objects.get_or_create(user=created_user)
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = SignUpForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+def logout_user(request):
+    logout(request)
+    return redirect('home')   
