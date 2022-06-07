@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # installed
     'clone.apps.CloneConfig',
-    'bootstrap5'
+    'bootstrap5',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
