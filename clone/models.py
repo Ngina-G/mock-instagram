@@ -6,13 +6,10 @@ from django.dispatch import receiver
 # Create your models here.
 
 class Profile(models.Model):
-    user_name = models.CharField(max_length =30)
+    name = models.CharField(max_length =30)
     bio = models.TextField(max_length=255)
     profile_photo = models.ImageField(upload_to='profile/',default ='image.jpg')
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', )
-
-    def __str__(self):
-       return self.user.user_name
 
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -41,7 +38,7 @@ class Profile(models.Model):
 
 class Post(models.Model):
     image = models.ImageField(upload_to = 'clone/', null=True)
-    image_name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     image_caption = models.CharField(max_length=255)
     likes = models.ManyToManyField(User, related_name='user',blank=True)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name='post', default='')  
@@ -54,10 +51,6 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return f"/post/{self.id}"
-
-    @classmethod
-    def get_image_by_id(self):
-        Image.objects.get(id=self.id)
 
     @property
 
@@ -82,6 +75,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
+    body = models.TextField(default='')
     name = models.CharField(max_length=350)
     post = models.ForeignKey(Post, related_name='comments',on_delete=models.CASCADE, default='')
 
@@ -95,5 +89,5 @@ class Comment(models.Model):
         Comment.objects.filter(pk=self.pk).delete()
 
     def __str__(self):
-        return self.name
+        return '%s - %s' % (self.post, self.name)
 
