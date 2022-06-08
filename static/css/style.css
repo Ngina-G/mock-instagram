@@ -3,12 +3,12 @@ div {
     font-size: 16px;
 }
 #form_search{
-    background-color: #555;
-    color: rgb(50, 48, 48);
+    background-color: rgb(189, 189, 189);
+    color: #555;
     display: flex;
     padding: 2px;
     border: none;
-    border-radius: none;
+    border-radius: 5px;
 }
 #button_search{
     text-indent: -999px;
