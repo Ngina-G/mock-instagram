@@ -1,33 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from clone.forms import UserImageForm, SignUpForm, UpdateUserForm, UpdateUserProfileForm, PostForm, CommentForm
+from clone.forms import SignUpForm, UpdateUserForm, UpdateUserProfileForm, PostForm, CommentForm
 from .models import Post, Profile, Comment
 from django.contrib.auth import login, authenticate,logout
 from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy,reverse
-
 # Create your views here.
    
 @login_required(login_url='/accounts/login')
-def user_image_request(request):  
-    if request.method == 'POST':  
-        form = UserImageForm(request.POST, request.FILES)  
-        if form.is_valid():  
-            form.save()  
-  
-            # Getting the current instance object to display in the template  
-            img_object = form.instance  
-              
-            return render(request, 'clone/post_form.html', {'form': form, 'img_obj': img_object})  
-    else:  
-        form = UserImageForm()  
-  
-    return render(request, 'clone/post_form.html', {'form': form})  
-
-
-@login_required(login_url='/accounts/login')
-def home(request):
+def index(request):
     images = Post.objects.all()
     users = User.objects.all()
     if request.method == 'POST':
@@ -39,9 +21,11 @@ def home(request):
             return HttpResponseRedirect(request.path_info)
     else:
         form = PostForm()
+        comment_form = CommentForm()
     params = {
         'images': images,
         'form': form,
+        'comment_form': comment_form,
         'users': users,
 
     }
@@ -73,15 +57,16 @@ def profile(request, username):
 
 
 @login_required(login_url='/accounts/login')
-def user_profile(request, id):
-    user_prof = get_object_or_404(User, id=id)
+def user_profile(request, username):
+    user_prof = get_object_or_404(User, username=username)
     if request.user == user_prof:
-        return redirect('profile', id=request.user.id)
+        return redirect('profile', username=request.user.username)
     user_posts = user_prof.profile.post.all()
     
     params = {
         'user_prof': user_prof,
         'user_posts': user_posts,
+        
     }
     return render(request, 'clone/user_profile.html', params)
 
@@ -111,10 +96,32 @@ def post_comment(request, id):
     return render(request, 'clone/post.html', params)
 
 
-def LikeView (request,pk):
-    image= get_object_or_404(Post,id=request.POST.get('image_id'))
-    image.likes.add(request.user)
-    return HttpResponseRedirect(reverse_lazy('user',args=[str(pk)]))
+def LikePost (request,pk):
+    # id = request.GET.get('image_id')
+    # image_id = Post.objects.get(id=id)
+
+    post= get_object_or_404(Post,id=request.POST.get('image_id'))
+    post.likes.add(request.user)
+
+    return redirect('home')
+
+#     if post.likes.filter(id=request.user.id).exists():
+#         post.likes.remove(request.user)
+#     else:
+#         post.likes.add(request.user)
+
+#     return HttpResponseRedirect(reverse('home', args=[str(pk)]))
+
+
+# def get_context_data(self, **kwargs):
+#         data = super().get_context_data(**kwargs)
+#         likes_connected = get_object_or_404(Post, id=self.kwargs['pk'])
+#         liked = False
+#         if likes_connected.likes.filter(id=self.request.user.id).exists():
+#             liked = True
+#         data['number_of_likes'] = likes_connected.number_of_likes()
+#         data['post_is_liked'] = liked
+#         return data
 
 
 @login_required(login_url='/accounts/login')

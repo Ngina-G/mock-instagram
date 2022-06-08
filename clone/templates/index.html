@@ -40,24 +40,26 @@
                     {% for image in images %}
                     <div class="card mb-4">
                         <div class="card-title" >
-                            <img src="{{ user.profile.profile_photo.url }}" class="img-thumbnail rounded-circle user-img">
-                            <a href="" class="mt-4 user" style="color: black; text-decoration: none;"><strong>{{image.user.user.username|title}}</strong></a>
+                            <br>
+                                <img src="{{ image.user.user.profile.profile_photo.url }}" class="rounded-circle"  style="border-radius: 50px; width: 45px;height: 45px;">
+                            <a href="{% url 'user_profile' image.user.user.username  %}" class="mt-4 user" style="color: black; text-decoration: none;"><strong>{{image.user.user.username|title}}</strong></a>
                         </div>
                         <div class="card-body mb-4">
-                            <a href=""><div class="card-text" style="background-image:url"{{ image.image.url }};background-size: contain;position: sticky">
+                            <a href="{% url 'comment' image.pk %}"><div class="card-text" style="background-image:url"{{ image.image.url }};background-size: contain;position: sticky">
                                 <img src="{{image.image.url}}"  class="card-img" width="100%"/>
                             </div></a>
                         </div>
-                        <div class="iconic ml-2">
-                            <button class="btn btn-sm" type="submit" name="image_id" value="{{image.id}}">
-                                <a href=""><i class="far fa-heart hearticon mx-auto"
-                                                                        aria-hidden="true"></i></a>
-                            </button>
-                            <button class="btn btn-sm" type="submit"><a href=""><i
-                                    class="far fa-comment hearticon mx-auto" aria-hidden="true"></i>
-                            </a></button>
-                        </div>
-                        <span class="ml-4 mb-1"><strong>{{image.likes.count}} like{{image.likes.count|pluralize}}</strong></span>
+                        
+                        <!-- LIKES -->
+                        <form action="{% url 'like_image' image.pk %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{request.path}}">
+                        <button type="submit" name="image_id" value="{{image.id}}" class="btn"><span class="iconify" data-icon="codicon:heart"></span></button>
+                        </form>
+                        <strong class="text-secondary">{{ image.likes.all.count }} likes</strong>
+
+                        <!-- COMMENTS -->
+                        
                         <span class="text-secondary ml-4 viewall"><a href="" style="font-size: 10px; color: lightgray; text-decoration: none;">view all {{image.comments.count}} comment{{image.comments.count|pluralize}}</a></span>
                         <div class="allcomments mb-4">
                             {% for comment in image.comments.all|slice:'2' %}
@@ -70,19 +72,24 @@
                             {% endfor %}
                             <p style="font-size: 10px;" class="text-secondary ml-4">posted {{image.created|timesince}} ago</p>
                         </div>
+                        <div class="container" style="border: 2px solid rgb(224, 224, 224); border-radius: 5px;">
+                            <button class="btn btn-sm" type="submit" >
+                                <a href="{% url 'comment' image.id %}" style="font-size: 14px; color:gray; text-decoration: none;">
+                                <span class="iconify" data-icon="ph:smiley"style="font-size: 22px; color: black; text-decoration: none;"></span>
+                                Add a comment
+                                </a>
+                            </button>
+                            
+                        </div>
                     </div>
                     {% endfor %}
 
                     <form action="" method="POST">
                         {% csrf_token %}
                         {% if is_liked %}
-                        <button class="btn btn-sm" type="submit" name="image_id" value="{{image.id}}"><i
-                                class="fa fa-heart hearticon mx-auto" aria-hidden="true" style="color:red"></i></a>
-                        </button>
+                        <button class="btn btn-sm" type="submit" name="image_id" value="{{image.id}}"><span class="iconify" data-icon="codicon:heart"></span></a></button>
                         {% else %}
-                        <button class="btn btn-sm" type="submit" id="like"  name="image_id" value="{{image.id}}"><i
-                                class="far fa-heart hearticon mx-auto" aria-hidden="true"></i>
-                        </button>
+                        <button class="btn btn-sm" type="submit" id="like"  name="image_id" value="{{image.id}}"><span class="iconify" data-icon="codicon:heart"></span></button>
                         {% endif %}
                     </form>
                     <span>{{ total_likes }} like{{ total_likes | pluralize}}</span>
@@ -96,8 +103,9 @@
                             <img class="img-thumbnail rounded-circle user-img" src="{{ user.profile.profile_photo.url }}">{{ user.bio }}
                         </div>
                         <div class="col-md-6 mt-4 user-detail">
-                            <span class=" inname">{{ user.username }}</span>
-                        </div>
+                            <span class=" text-secondary"><a
+                                href="{% url 'user_profile' user.username %}" style="text-decoration: none; color:black;"><strong>{{ user.username }}</strong></a></span> <br>
+                        <span class=" inname">{{ user.profile.name }}</span>
                     </div>
                     <div class="row">
                         <div class="col-md-10">
@@ -110,7 +118,7 @@
                                             <img class="rounded-circle" src="{{ user.profile.profile_photo.url }}" width="45px" height="45px">
                                         </div>
                                         <div class="col-md-6 mr-2 mt-2">
-                                            <span><a href=""style="color: black; text-decoration: none;"><strong>{{user.username}}</strong></a></span>
+                                            <span><a href="{% url 'user_profile' user.username %}"style="color: black; text-decoration: none;"><strong>{{user.username}}</strong></a></span>
                                         </div>
                                         <div class="col-md-4"><a style="font-size: 12px; text-decoration: none;" href="http://">Follow</a>
                                         </div>

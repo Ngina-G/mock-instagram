@@ -40,7 +40,7 @@ class Post(models.Model):
     image = models.ImageField(upload_to = 'clone/', null=True)
     name = models.CharField(max_length=50)
     image_caption = models.CharField(max_length=255)
-    likes = models.ManyToManyField(User, related_name='user',blank=True)
+    likes = models.ManyToManyField(User, related_name='like_image',blank=True)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE,related_name='post', default='')  
     created = models.DateTimeField(auto_now_add=True,null=True)
     # comments = models.ForeignKey(Comment, on_delete=models.CASCADE)
