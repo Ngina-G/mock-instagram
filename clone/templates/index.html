@@ -39,9 +39,8 @@
 
                     {% for image in images %}
                     <div class="card mb-4">
-                        <div class="card-title">
-                            <img src="{{ user.profile.profile_photo.url }}" class="rounded-circle border ml-3 mt-2  mr-3"
-                                alt="{{image.user.user.username}}" width="35" height="35">
+                        <div class="card-title" style="font-size: 10px; color: black; text-decoration: none; font-weight: 500;" >
+                            <img src="{{ user.profile.profile_photo.url }}" class="rounded-circle border ml-3 mt-2  mr-3" width="35" height="35">
                             <a href="" class="mt-4 user">{{image.user.user.username|title}}</a>
                         </div>
                         <div class="card-body mb-4">
@@ -59,7 +58,7 @@
                             </a></button>
                         </div>
                         <span class="ml-4 mb-1"><strong>{{image.likes.count}} like{{image.likes.count|pluralize}}</strong></span>
-                        <span class="text-secondary ml-4 viewall"><a href="">view all {{image.comments.count}} comment{{image.comments.count|pluralize}}</a></span>
+                        <span class="text-secondary ml-4 viewall" style="font-size: 10px; color: lightgray; text-decoration: none;" ><a href="">view all {{image.comments.count}} comment{{image.comments.count|pluralize}}</a></span>
                         <div class="allcomments mb-4">
                             {% for comment in image.comments.all|slice:'2' %}
                             <div class="comment">
@@ -90,7 +89,7 @@
 
                 </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-4">
     
                 <div class="col-md-4 mt-4 userinfo">
                     <div class="row">
