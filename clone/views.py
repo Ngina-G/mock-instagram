@@ -73,10 +73,10 @@ def profile(request, username):
 
 
 @login_required(login_url='/accounts/login')
-def user_profile(request, username):
-    user_prof = get_object_or_404(User, username=username)
+def user_profile(request, id):
+    user_prof = get_object_or_404(User, id=id)
     if request.user == user_prof:
-        return redirect('profile', username=request.user.username)
+        return redirect('profile', id=request.user.id)
     user_posts = user_prof.profile.post.all()
     
     params = {
