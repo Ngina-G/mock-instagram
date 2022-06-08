@@ -24,12 +24,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'h#@u)wnkcda)l2x6aj0^ycau=0kd0f+(b9v79=9zf206!v5t@='
+SECRET_KEY = 'h#@u)wnkcda)l2x6aj0^ycau=0kd0f+(b9v79=9zf206!v5t@='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
-# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []
 
 MODE=config("MODE", default="dev")
 SECRET_KEY = config('SECRET_KEY')
@@ -60,6 +60,16 @@ db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+
+
+# DATABASES={
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'instaclone',
+#         'USER': 'ngina',
+#         'PASSWORD':'Postgres',
+#     }
+# }
 
 # Application definition
 

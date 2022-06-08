@@ -44,3 +44,10 @@ div {
     border-color: #1183d6;
     outline: none;
 }
+#spacing-cont{
+    display: flex;
+}
+#spacing-det{
+    flex-direction: row;
+    justify-content: space-between;
+}

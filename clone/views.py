@@ -29,7 +29,7 @@ def user_image_request(request):
 @login_required(login_url='/accounts/login')
 def home(request):
     images = Post.objects.all()
-    users = User.objects.exclude(id=request.user.id)
+    users = User.objects.all()
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():

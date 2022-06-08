@@ -62,7 +62,7 @@
                         <div class="allcomments mb-4">
                             {% for comment in image.comments.all|slice:'2' %}
                             <div class="comment">
-                                <div class="ml-4"><strong>{{ comment.user.user.username }}</strong> <span
+                                <div class="ml-4"><strong>{{ comment.user.username }}</strong> <span
                                         class="text-secondary">{{ comment.body }}</span>
                                 </div>
                             </div>
@@ -90,10 +90,10 @@
                 </div>
             </div>
    
-                <div class="col-md-4 mt-4 userinfo">
+                <div class="col-md-4 mt-4 offset-md-1 userinfo">
                     <div class="row">
                         <div class="col-md-3 ml-2">
-                            <img class="img-thumbnail rounded-circle user-img" src="{{ user.profile_photo.url }}"">
+                            <img class="img-thumbnail rounded-circle user-img" src="{{ user.profile.profile_photo.url }}">{{ user.bio }}
                         </div>
                         <div class="col-md-6 mt-4 user-detail">
                             <span class=" inname">{{ user.username }}</span>
@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-md-10">
                             <div class="card mt-4 mr-2 ml-2">
-                                <div class="card-title text-secondary mt-2 mr-2 ml-2 ">Suggestions</div>
+                                <div class="card-title text-secondary mt-2 mr-2 ml-2  text-center">Suggestions</div>
                                 {% for user in users %}
                                 <div class="container">
                                     <div class="row">
@@ -110,21 +110,22 @@
                                             <img class="rounded-circle" src="{{ user.profile.profile_photo.url }}" width="45px" height="45px">
                                         </div>
                                         <div class="col-md-6 mr-2 mt-2">
-                                            <span><a href="">{{user.username}}</a></span>
+                                            <span><a href=""style="color: black; text-decoration: none;"><strong>{{user.username}}</strong></a></span>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4"><a style="font-size: 12px; text-decoration: none;" href="http://">Follow</a>
                                         </div>
                                     </div>
                                 </div>
 
                                 {% endfor %}
                             </div>
+                            <p class="text-center mt-5" style="font-size: 12px; color: lightgray; text-decoration: none;">All rights reserved. Ngina Gitau @ 2022</p>
+
                         </div>
                         <div class="col-md-2"></div>
                     </div>
             </div>
         </div>
-    <p class="text-center mt-5">All rights reserved. Ngina Gitau @ 2022</p>
 </div>
 
 {% endblock %}
